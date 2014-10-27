@@ -370,11 +370,16 @@ class AuthorizeNetCIM extends AuthorizeNetRequest
         $this->_post_string = $this->_xml->asXML();
         
         // Add extraOptions CDATA
+        // @jakedowns: applied patch from http://community.developer.authorize.net/t5/Integration-and-Testing/PHP-SDK-bug-with-setting-extraOptions-string-for-CIM/td-p/10488
         if ($this->_extraOptions) {
-            $this->_xml->addChild("extraOptions");
-            $this->_post_string = str_replace(array("<extraOptions></extraOptions>","<extraOptions/>"),'<extraOptions><![CDATA[' . $this->_extraOptions . ']]></extraOptions>', $this->_xml->asXML());
-            $this->_extraOptions = false;
+          // $this->_xml->addChild("extraOptions");
+          // $this->_post_string = str_replace("<extraOptions></extraOptions>",'<extraOptions><![CDATA[' . $this->_extraOptions . ']]></extraOptions>', $this->_xml->asXML());
+          $dom = dom_import_simplexml($this->_xml);
+          $extraOptions = $dom->appendChild($dom->ownerDocument->createElement("extraOptions"));
+          $extraOptions->appendChild($dom->ownerDocument->createCDATASection($this->_extraOptions));
+          $this->_post_string = $this->_xml->asXML();
         }
+
         // Blank out our validation mode, so that we don't include it in calls that
         // don't use it.
         $this->_validationMode = "none";

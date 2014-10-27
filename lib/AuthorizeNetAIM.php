@@ -408,6 +408,11 @@ class AuthorizeNetAIM_Response extends AuthorizeNetResponse
                 $this->_response_array = explode($delimiter, $response);
             }
             
+            // @jakedowns: Something is happening when adding extraOptions that breaks the previous attempt at splitting the array
+            if (count($this->_response_array) < 2) {
+              $this->_response_array = explode($delimiter, $response);
+            }
+            
             /**
              * If AuthorizeNet doesn't return a delimited response.
              */

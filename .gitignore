@@ -9,3 +9,6 @@ build
 .buildpath
 .project
 .settings
+
+# Ignore phpstorm project files
+.idea
